@@ -12,6 +12,8 @@
 #   https://github.com/scottwb/jekyll-tweet-tag/blob/master/README.md
 #
 require 'json'
+require 'net/http'
+require 'digest/md5'
 
 module Jekyll
   class TweetTag < Liquid::Tag
