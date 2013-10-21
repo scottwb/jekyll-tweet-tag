@@ -35,6 +35,14 @@ any parameter supported by the [Twitter oEmbed API](https://dev.twitter.com/docs
 In an attempt to maintain compatibility with Robert Böhnke's [Embed.ly Tag](https://github.com/robb/jekyll-embedly-client),
 the `tweet` tag wraps the embedded code with a `<div class='embed tweet'>`.
 
+## Markdown renderer
+
+The default markdown engine used by Jekyll (~1.2) is the `maruku` markdown renderer which has problems parsing the html content returned from Twitter API and throws an exception (see issue #5). Suggest using the `redcarpet` engine instead by specifying this in `_config.yml` if you experience any problems.
+
+```yaml
+markdown: redcarpet
+```
+
 # Caching
 
 The Twitter oEmbed API is rate-limited. The `tweet` tag caches all API responses in a directory named `.tweet-cache`.
