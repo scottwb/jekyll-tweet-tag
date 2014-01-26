@@ -77,7 +77,10 @@ module Jekyll
 
     def live_response(api_params)
       api_uri = URI.parse(TWITTER_OEMBED_URL + "?#{url_params_for(api_params)}")
-      response = Net::HTTP.get(api_uri.host, api_uri.request_uri)
+      http = Net::HTTP.new(api_uri.host, api_uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      response = http.get(api_uri.request_uri).body
       cache(api_params, response) unless @cache_disabled
       JSON.parse(response)
     end
