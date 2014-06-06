@@ -12,7 +12,6 @@
 #   https://github.com/scottwb/jekyll-tweet-tag/blob/master/README.md
 #
 require 'json'
-require 'pry'
 
 module Jekyll
   class TweetTag < Liquid::Tag
