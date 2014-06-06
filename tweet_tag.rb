@@ -16,7 +16,7 @@ require 'json'
 module Jekyll
   class TweetTag < Liquid::Tag
 
-    TWITTER_OEMBED_URL = "https://api.twitter.com/1/statuses/oembed.json"
+    TWITTER_OEMBED_URL = "http://api.twitter.com/1/statuses/oembed.json"
 
     def initialize(tag_name, text, tokens)
       super
@@ -46,7 +46,7 @@ module Jekyll
     def html_output_for(api_params)
       body = "Tweet could not be processed"
       if response = cached_response(api_params) || live_response(api_params)
-        body = response['html'] || response['error'] || body
+        body = response['html'] || output_errors(response['errors']) || body
       end
       "<div class='embed tweet'>#{body}</div>"
     end
@@ -80,6 +80,22 @@ module Jekyll
       response = Net::HTTP.get(api_uri.host, api_uri.request_uri)
       cache(api_params, response) unless @cache_disabled
       JSON.parse(response)
+    end
+
+    private
+
+    # Private: Duplicate some text an arbitrary number of times.
+    #
+    # errors  - The errors Hash fro the API response
+    #
+    # Returns a string containing one or many errors formatted as:
+    #   Error #00: Uh Oh <br>
+    #   Error #01: Run!
+    #
+    def output_errors(errors)
+      errors.map do |error| 
+        "Error ##{error['code']}: #{error['message']}"
+      end.join('<br>')
     end
   end
 
