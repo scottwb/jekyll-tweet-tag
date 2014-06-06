@@ -12,6 +12,7 @@
 #   https://github.com/scottwb/jekyll-tweet-tag/blob/master/README.md
 #
 require 'json'
+require 'pry'
 
 module Jekyll
   class TweetTag < Liquid::Tag
@@ -46,7 +47,7 @@ module Jekyll
     def html_output_for(api_params)
       body = "Tweet could not be processed"
       if response = cached_response(api_params) || live_response(api_params)
-        body = response['html'] || response['error'] || body
+        body = response['html'] || output_errors(response['errors']) || body
       end
       "<div class='embed tweet'>#{body}</div>"
     end
@@ -88,6 +89,16 @@ module Jekyll
       super
       @cache_disabled = true
     end
+  end
+
+  private
+
+  # Returns a string containing one or many errors formatted as:
+  #   Error #00: Uh Oh <br>
+  #   Error #01: Run!
+  #
+  def output_errors(errors)
+    errors.map { |error| "Error ##{error['code']}: #{error['message']} <br>"}
   end
 end
 
