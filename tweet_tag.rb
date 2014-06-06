@@ -17,7 +17,7 @@ require 'pry'
 module Jekyll
   class TweetTag < Liquid::Tag
 
-    TWITTER_OEMBED_URL = "https://api.twitter.com/1/statuses/oembed.json"
+    TWITTER_OEMBED_URL = "http://api.twitter.com/1/statuses/oembed.json"
 
     def initialize(tag_name, text, tokens)
       super
@@ -82,6 +82,20 @@ module Jekyll
       cache(api_params, response) unless @cache_disabled
       JSON.parse(response)
     end
+
+    private
+
+    # Private: Duplicate some text an arbitrary number of times.
+    #
+    # errors  - The errors Hash fro the API response
+    #
+    # Returns a string containing one or many errors formatted as:
+    #   Error #00: Uh Oh <br>
+    #   Error #01: Run!
+    #
+    def output_errors(errors)
+      errors.map { |error| "Error ##{error['code']}: #{error['message']} <br>"}
+    end
   end
 
   class TweetTagNoCache < TweetTag
@@ -89,16 +103,6 @@ module Jekyll
       super
       @cache_disabled = true
     end
-  end
-
-  private
-
-  # Returns a string containing one or many errors formatted as:
-  #   Error #00: Uh Oh <br>
-  #   Error #01: Run!
-  #
-  def output_errors(errors)
-    errors.map { |error| "Error ##{error['code']}: #{error['message']} <br>"}
   end
 end
 
