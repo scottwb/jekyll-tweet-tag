@@ -94,7 +94,9 @@ module Jekyll
     #   Error #01: Run!
     #
     def output_errors(errors)
-      errors.map { |error| "Error ##{error['code']}: #{error['message']} <br>"}
+      errors.map do |error| 
+        "Error ##{error['code']}: #{error['message']}"
+      end.join('<br>')
     end
   end
 
